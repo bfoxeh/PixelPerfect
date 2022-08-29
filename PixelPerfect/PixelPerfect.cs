@@ -14,6 +14,7 @@ using Num = System.Numerics;
 
 namespace PixelPerfect
 {
+#pragma warning disable CA1416 // Validate platform compatibility
     public class PixelPerfect : IDalamudPlugin
     {
         public string Name => "Pixel Perfect";
@@ -24,73 +25,85 @@ namespace PixelPerfect
         private readonly GameGui _gui;
         private readonly Condition _condition;
         private readonly PartyList _partylist;
-
         private readonly Config _configuration;
-        private bool _enabled;
+
         private bool _config;
         private bool _combat;
-        //private bool _circle;
         private bool _instance;
+
+        //hbdot
+        private bool _enabled;
         private Num.Vector4 _col = new Num.Vector4(1f, 1f, 1f, 1f);
-        //private Num.Vector4 _col2 = new Num.Vector4(0.4f, 0.4f, 0.4f, 1f);
-        private Num.Vector4 _hbcol = new Num.Vector4(0.4f, 0.4f, 0.4f, 1f);
+        private float _hbdotradius = 2f;
 
         //ring
         private bool _ring;
         private Num.Vector4 _colRing = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
         private float _radius = 10f;
         private int _segments = 100;
-        private float _thickness = 10f;
+        private float _thickness = 5f;
+
         //ring2
         private bool _ring2;
         private Num.Vector4 _colRing2 = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
         private float _radius2 = 10f;
         private int _segments2 = 100;
-        private float _thickness2 = 10f;
+        private float _thickness2 = 5f;
+
         //ring3
         private bool _ring3;
         private Num.Vector4 _colRing3 = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
         private float _radius3 = 10f;
         private int _segments3 = 100;
-        private float _thickness3 = 10f;
+        private float _thickness3 = 5f;
+
         //ring4
         private bool _ring4;
         private Num.Vector4 _colRing4 = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
         private float _radius4 = 10f;
         private int _segments4 = 100;
-        private float _thickness4 = 10f;
+        private float _thickness4 = 5f;
+
         //ring5
         private bool _ring5;
         private Num.Vector4 _colRing5 = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
         private float _radius5 = 10f;
         private int _segments5 = 100;
-        private float _thickness5 = 10f;
+        private float _thickness5 = 5f;
 
         //hitbox ring
         private bool _hbring;
         private Num.Vector4 _hbcolRing = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
         private float _hbradius = 10f;
         private int _hbsegments = 100;
-        private float _hbthickness = 10f;
+        private float _hbthickness = 5f;
+
+        //party hitbox dot
+        private bool _partyenabled;
+        private Num.Vector4 _pdotcol = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
+        private float _pdotthickness = 2f;
 
         //party hitbox ring
         private bool _phbring;
         private Num.Vector4 _phbcolRing = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
         private float _phbradius = 10f;
         private int _phbsegments = 100;
-        private float _phbthickness = 10f;
+        private float _phbthickness = 5f;
 
-        //party hitbox dot
-        private bool _partyenabled;
-        private Num.Vector4 _pdotcol = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
+        //party hitbox ring rolecolor options
+        private bool _rolecolors;
+        private Num.Vector4 _melecolor = new Num.Vector4(255.0f, 0.0f, 0.0f, 128f);
+        private Num.Vector4 _physrangecolor = new Num.Vector4(255.0f, 0.0f, 255.0f, 128.0f);
+        private Num.Vector4 _magicrangecolor = new Num.Vector4(255.0f, 255.0f, 0.0f, 128.0f);
+        private Num.Vector4 _tankcolor = new Num.Vector4(0.0f, 0.0f, 255.0f, 128.0f);
+        private Num.Vector4 _healercolor = new Num.Vector4(0.0f, 255.0f, 0.0f, 0.0f);
 
-        //party mele ring
+        //party member ring
         private bool _partyring1;
         private Num.Vector4 _partycolRing1 = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-        private float _partyradius1 = 10f;
+        private float _partyradius1 = 3f;
         private int _partysegments1 = 100;
-        private float _partythickness1 = 10f;
-
+        private float _partythickness1 = 5f;
 
         //compass stuff
         private bool _north, _east, _south, _west, _player;
@@ -108,11 +121,9 @@ namespace PixelPerfect
         private Num.Vector4 _wchevCol = new Num.Vector4(1f, 1f, 1f, 1f);
         private Num.Vector4 _pchevCol = new Num.Vector4(1f, 1f, 1f, 1f);
 
-
         private float _nlineOffset = 0.6f, _elineOffset = 0.6f, _slineOffset = 0.6f, _wlineOffset = 0.6f, _plineOffset = 0.6f;
         private float _nlineLength = 1f, _elineLength = 1f, _slineLength = 1f, _wlineLength = 1f, _plineLength = 1f;
         private float _nlineThicc = 10f, _elineThicc = 10f, _slineThicc = 10f, _wlineThicc = 10f, _plineThicc = 10f;
-
 
         private Num.Vector4 _nlineCol = new Num.Vector4(1f, 1f, 1f, 1f);
         private Num.Vector4 _elineCol = new Num.Vector4(1f, 1f, 1f, 1f);
@@ -120,46 +131,7 @@ namespace PixelPerfect
         private Num.Vector4 _wlineCol = new Num.Vector4(1f, 1f, 1f, 1f);
         private Num.Vector4 _plineCol = new Num.Vector4(1f, 1f, 1f, 1f);
 
-        //ingress / egress
-        private bool _ingress, _egress, _ingpoly, _egrpoly, _ingline, _egrline, _ingchev, _egrchev;
-
-        private float _ingvalue = 15.0f, _egrvalue = 15.0f;
-
-        //ingress polygon
-        private Num.Vector4 _ingcolPolygon = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-        private float _ingradius = 10f;
-        private int _ingsegments = 100;
-        private float _ingthickness = 10f;
-        private Num.Vector4 _ingcol = new Num.Vector4(0.4f, 0.4f, 0.4f, 1f);
-
-        //egress polygon
-        private Num.Vector4 _egrcolPolygon = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-        private float _egrradius = 10f;
-        private int _egrsegments = 100;
-        private float _egrthickness = 10f;
-        private Num.Vector4 _egrcol = new Num.Vector4(0.4f, 0.4f, 0.4f, 1f);
-
-        //ingress line
-        private Num.Vector4 _inglineCol = new Num.Vector4(1f, 1f, 1f, 1f);
-        private float _inglineOffset = 0.6f, _inglineLength = 1f, _inglineThicc = 1f;
-        //egress line
-        private Num.Vector4 _egrlineCol = new Num.Vector4(1f, 1f, 1f, 1f);
-        private float _egrlineOffset = 0.6f, _egrlineLength = 1f, _egrlineThicc = 1f;
-        //ingress chevron
-
-        private Num.Vector4 _inghevCol = new Num.Vector4(1f, 1f, 1f, 1f);
-        private float _ingchevLength = 0.5f, _ingchevOffset = 0.5f, _ingchevRad = 0.5f, _ingchevThicc = 1.0f;
-        //egress chevron
-
-        private Num.Vector4 _egrhevCol = new Num.Vector4(1f, 1f, 1f, 1f);
-        private float _egrchevLength = 0.5f, _egrchevOffset = 0.5f, _egrchevRad = 0.5f, _egrchevThicc = 1.0f;
-
-        //gap closer stuff
-        private bool _gapcloser;
-        private float _gapcloserDist;
-
-
-
+        //save config after 100 ticks
         private int dirtyHack = 0;
 
 
@@ -183,6 +155,13 @@ namespace PixelPerfect
 
             _configuration = pluginInterface.GetPluginConfig() as Config ?? new Config();
 
+            _combat = _configuration.Combat;
+            _instance = _configuration.Instance;
+
+            _enabled = _configuration.Enabled;
+            _col = _configuration.Col;
+            _hbdotradius = _configuration.HBdotradius;
+
             _north = _configuration.North;
             _east = _configuration.East;
             _south = _configuration.South;
@@ -194,21 +173,19 @@ namespace PixelPerfect
             _hbcolRing = _configuration.HBColRing;
             _hbsegments = _configuration.HBSegments;
             _hbradius = _configuration.HBRadius;
-            _hbcol = _configuration.HBCol;
 
             _ring = _configuration.Ring;
             _thickness = _configuration.Thickness;
             _colRing = _configuration.ColRing;
             _segments = _configuration.Segments;
             _radius = _configuration.Radius;
-            _col = _configuration.Col;
+
 
             _ring2 = _configuration.Ring2;
             _thickness2 = _configuration.Thickness2;
             _colRing2 = _configuration.ColRing2;
             _segments2 = _configuration.Segments2;
             _radius2 = _configuration.Radius2;
-            //_col2 = _configuration.Col2;
 
             _ring3 = _configuration.Ring3;
             _thickness3 = _configuration.Thickness3;
@@ -227,11 +204,6 @@ namespace PixelPerfect
             _colRing5 = _configuration.ColRing5;
             _segments5 = _configuration.Segments5;
             _radius5 = _configuration.Radius5;
-
-            _enabled = _configuration.Enabled;
-            _combat = _configuration.Combat;
-            //_circle = _configuration.Circle;
-            _instance = _configuration.Instance;
 
             _nchev = _configuration.NChev;
             _nchevLength = _configuration.NChevLength;
@@ -268,7 +240,6 @@ namespace PixelPerfect
             _pchevThicc = _configuration.PChevThicc;
             _pchevCol = _configuration.PChevCol;
 
-
             _nline = _configuration.NLine;
             _nlineOffset = _configuration.NLineOffset;
             _nlineLength = _configuration.NLineLength;
@@ -299,23 +270,6 @@ namespace PixelPerfect
             _plineThicc = _configuration.PLineThicc;
             _plineCol = _configuration.PLineCol;
 
-            _ingress = _configuration.Ingress;
-            _egress = _configuration.Egress;
-            _ingpoly = _configuration.Ingpoly;
-            _egrpoly = _configuration.Egrpoly;
-            _ingline = _configuration.Ingline;
-            _egrline = _configuration.Egrline;
-
-            _ingvalue = _configuration.IngressValue;
-            _egrvalue = _configuration.EgressValue;
-
-            _ingcolPolygon = _configuration.IngcolPolygon;
-            _ingradius = _configuration.IngRadius;
-            _ingsegments = _configuration.IngSegments;
-            _ingthickness = _configuration.IngThickness;
-            _ingcol = _configuration.IngCol;
-
-
             _phbring = _configuration.PhbRing;
             _phbcolRing = _configuration.PhbColRing;
             _phbradius = _configuration.PhbRadius;
@@ -330,6 +284,13 @@ namespace PixelPerfect
             _partyradius1 = _configuration.PRadius1;
             _partysegments1 = _configuration.PSegments1;
             _partythickness1 = _configuration.PThickness1;
+
+            _rolecolors = _configuration.RoleColors;
+            _melecolor  = _configuration.MeleColor;
+            _physrangecolor = _configuration.PhysRangeColor;
+            _magicrangecolor = _configuration.MagicRangeColor;
+            _tankcolor = _configuration.TankColor;
+            _healercolor = _configuration.HealerColor;
 
 
             pluginInterface.UiBuilder.Draw += DrawWindow;
@@ -346,7 +307,6 @@ namespace PixelPerfect
             _config = true;
         }
 
-
         public void Dispose()
         {
             _pi.UiBuilder.Draw -= DrawWindow;
@@ -354,9 +314,7 @@ namespace PixelPerfect
             _cm.RemoveHandler("/pp");
         }
 
-
-        //Config GUI STUFF
-
+        ///<GUI Code>///
         private void DrawWindow()
         {
             if (_config)
@@ -389,6 +347,11 @@ namespace PixelPerfect
                     if (ImGui.IsItemHovered())
                     {
                         ImGui.SetTooltip("The colour of the hitbox");
+                    }
+                    ImGui.DragFloat("HB dot thickness", ref _hbdotradius);
+                    if (ImGui.IsItemHovered())
+                    {
+                        ImGui.SetTooltip("The thiccness of the Dot");
                     }
                 }
                 ImGui.Checkbox("Hitbox Ring", ref _hbring);
@@ -475,11 +438,6 @@ namespace PixelPerfect
                         {
                             ImGui.SetTooltip("N Chevron Width");
                         }
-                        //ImGui.DragFloat("Chevron Sin", ref _nchevSin);
-                        //if (ImGui.IsItemHovered())
-                        //{
-                        //    ImGui.SetTooltip("These are all a bit iffy, due to maths. Mess around with them");
-                        //}
                         ImGui.DragFloat("N Chevron Thickness", ref _nchevThicc);
                         if (ImGui.IsItemHovered())
                         {
@@ -492,7 +450,6 @@ namespace PixelPerfect
                         }
                     }
                 }
-                //E
                 ImGui.Checkbox("E Stuff", ref _east);
                 if (ImGui.IsItemHovered())
                 {
@@ -553,11 +510,6 @@ namespace PixelPerfect
                         {
                             ImGui.SetTooltip("E Chevron Width");
                         }
-                        //ImGui.DragFloat("Chevron Sin", ref _nchevSin);
-                        //if (ImGui.IsItemHovered())
-                        //{
-                        //    ImGui.SetTooltip("These are all a bit iffy, due to maths. Mess around with them");
-                        //}
                         ImGui.DragFloat("E Chevron Thickness", ref _echevThicc);
                         if (ImGui.IsItemHovered())
                         {
@@ -570,8 +522,6 @@ namespace PixelPerfect
                         }
                     }
                 }
-
-                //S
                 ImGui.Checkbox("S Stuff", ref _south);
                 if (ImGui.IsItemHovered())
                 {
@@ -632,11 +582,6 @@ namespace PixelPerfect
                         {
                             ImGui.SetTooltip("S Chevron Width");
                         }
-                        //ImGui.DragFloat("Chevron Sin", ref _nchevSin);
-                        //if (ImGui.IsItemHovered())
-                        //{
-                        //    ImGui.SetTooltip("These are all a bit iffy, due to maths. Mess around with them");
-                        //}
                         ImGui.DragFloat("S Chevron Thickness", ref _schevThicc);
                         if (ImGui.IsItemHovered())
                         {
@@ -649,8 +594,6 @@ namespace PixelPerfect
                         }
                     }
                 }
-
-                //W
                 ImGui.Checkbox("W Stuff", ref _west);
                 if (ImGui.IsItemHovered())
                 {
@@ -711,11 +654,6 @@ namespace PixelPerfect
                         {
                             ImGui.SetTooltip("W Chevron Width");
                         }
-                        //ImGui.DragFloat("Chevron Sin", ref _nchevSin);
-                        //if (ImGui.IsItemHovered())
-                        //{
-                        //    ImGui.SetTooltip("These are all a bit iffy, due to maths. Mess around with them");
-                        //}
                         ImGui.DragFloat("W Chevron Thickness", ref _wchevThicc);
                         if (ImGui.IsItemHovered())
                         {
@@ -788,11 +726,6 @@ namespace PixelPerfect
                     {
                         ImGui.SetTooltip("Chevron Width");
                     }
-                    //ImGui.DragFloat("Chevron Sin", ref _nchevSin);
-                    //if (ImGui.IsItemHovered())
-                    //{
-                    //    ImGui.SetTooltip("These are all a bit iffy, due to maths. Mess around with them");
-                    //}
                     ImGui.DragFloat("Player Chevron Thickness", ref _pchevThicc);
                     if (ImGui.IsItemHovered())
                     {
@@ -804,7 +737,6 @@ namespace PixelPerfect
                         ImGui.SetTooltip("The color of the Chevron");
                     }
                 }
-                //<Working Below!>//
                 ImGui.Separator();
                 ImGui.Checkbox("PartyDot", ref _partyenabled);
                 if (ImGui.IsItemHovered())
@@ -829,6 +761,46 @@ namespace PixelPerfect
                     if (ImGui.IsItemHovered())
                     {
                         ImGui.SetTooltip("The colour of the hitbox");
+                    }
+                    ImGui.SameLine();
+                    ImGui.Checkbox("Role Colors", ref _rolecolors);
+                    if (ImGui.IsItemHovered())
+                    {
+                        ImGui.SetTooltip("Sets party hitbox to role colors");
+                    }
+                    ImGui.DragFloat("PHB dot thickness", ref _pdotthickness);
+                    if (ImGui.IsItemHovered())
+                    {
+                        ImGui.SetTooltip("The thiccness of the party Dot");
+                    }
+
+                }
+                if (_rolecolors)
+                {
+                    ImGui.ColorEdit4("Mele Color", ref _melecolor, ImGuiColorEditFlags.NoInputs);
+                    if (ImGui.IsItemHovered())
+                    {
+                        ImGui.SetTooltip("The color of mele hitbox");
+                    }
+                    ImGui.ColorEdit4("P Ranged Color", ref _physrangecolor, ImGuiColorEditFlags.NoInputs);
+                    if (ImGui.IsItemHovered())
+                    {
+                        ImGui.SetTooltip("The color of P Ranged hitbox");
+                    }
+                    ImGui.ColorEdit4("M Ranged Color", ref _magicrangecolor, ImGuiColorEditFlags.NoInputs);
+                    if (ImGui.IsItemHovered())
+                    {
+                        ImGui.SetTooltip("The color of M Ranged hitbox");
+                    }
+                    ImGui.ColorEdit4("Tank Color", ref _tankcolor, ImGuiColorEditFlags.NoInputs);
+                    if (ImGui.IsItemHovered())
+                    {
+                        ImGui.SetTooltip("The color of Tank hitbox");
+                    }
+                    ImGui.ColorEdit4("Healer Color", ref _healercolor, ImGuiColorEditFlags.NoInputs);
+                    if (ImGui.IsItemHovered())
+                    {
+                        ImGui.SetTooltip("The color of Healer hitbox");
                     }
                 }
                 if (_phbring)
@@ -872,7 +844,6 @@ namespace PixelPerfect
                         ImGui.SetTooltip("The color of the Party ring");
                     }
                 }
-                //<Working Above!>//
                 ImGui.Separator();
                 ImGui.Checkbox("Ring", ref _ring);
                 if (ImGui.IsItemHovered())
@@ -1050,6 +1021,8 @@ namespace PixelPerfect
                 ImGui.PopStyleColor(3);
                 ImGui.End();
 
+
+
                 if (dirtyHack > 100)
                 {
                     SaveConfig();
@@ -1058,6 +1031,8 @@ namespace PixelPerfect
 
                 dirtyHack++;
             }
+
+            ///<logic>///
 
             if (_cs.LocalPlayer == null) return;
 
@@ -1097,69 +1072,58 @@ namespace PixelPerfect
 
                 ImGui.GetWindowDrawList().AddCircleFilled(
                     new Num.Vector2(pos.X, pos.Y),
-                    2f,
+                    _hbdotradius,
                     ImGui.GetColorU32(_col),
                     100);
             }
-            /*
-            if (_circle)
-             {
-                 ImGui.GetWindowDrawList().AddCircle(
-                     new Num.Vector2(pos.X, pos.Y),
-                     2.2f,
-                     ImGui.GetColorU32(_col2),
-                     100);
-             }
-             */
+
             if (_ring)
             {
                 DrawRingWorld(_cs.LocalPlayer, _radius, _segments, _thickness,
                     ImGui.GetColorU32(_colRing));
             }
+
             if (_ring2)
             {
                 DrawRingWorld(_cs.LocalPlayer, _radius2, _segments2, _thickness2,
                     ImGui.GetColorU32(_colRing2));
             }
+
             if (_ring3)
             {
                 DrawRingWorld(_cs.LocalPlayer, _radius3, _segments3, _thickness3,
                     ImGui.GetColorU32(_colRing3));
             }
+
             if (_ring4)
             {
                 DrawRingWorld(_cs.LocalPlayer, _radius4, _segments4, _thickness4,
                     ImGui.GetColorU32(_colRing4));
             }
+
             if (_ring5)
             {
                 DrawRingWorld(_cs.LocalPlayer, _radius5, _segments5, _thickness5,
                     ImGui.GetColorU32(_colRing5));
             }
+
             if (_hbring)
             {
-
-                //player hitbox draw event
-
                 DrawRingWorld(_cs.LocalPlayer, _cs.LocalPlayer.HitboxRadius, _hbsegments, _hbthickness,
                     ImGui.GetColorU32(_hbcolRing));
-
-
             }
 
-            //N
             if (_north)
             {
                 if (_nline)
                 {
-                    //Tip of arrow
                     _gui.WorldToScreen(new Num.Vector3(
                                 actor.Position.X + ((_nlineLength + _nlineOffset) * (float)Math.Sin(Math.PI)),
                                 actor.Position.Y,
                                 actor.Position.Z + ((_nlineLength + _nlineOffset) * (float)Math.Cos(Math.PI))
                             ),
                             out Num.Vector2 lineTip);
-                    //Player + offset
+
                     _gui.WorldToScreen(new Num.Vector3(
                             actor.Position.X + (_nlineOffset * (float)Math.Sin(Math.PI)),
                             actor.Position.Y,
@@ -1172,13 +1136,9 @@ namespace PixelPerfect
                 }
                 if (_nchev)
                 {
-
-                    //R Arrow Line
                     _gui.WorldToScreen(new Num.Vector3(actor.Position.X + (_nchevRad / 2), actor.Position.Y, actor.Position.Z - _nchevOffset), out Num.Vector2 chevOffset1);
-                    //L Arrow Line
                     _gui.WorldToScreen(new Num.Vector3(actor.Position.X - (_nchevRad / 2), actor.Position.Y, actor.Position.Z - _nchevOffset), out Num.Vector2 chevOffset2);
 
-                    //N chev tip
                     _gui.WorldToScreen(new Num.Vector3(
                         actor.Position.X + ((_nchevOffset + _nchevLength) * (float)Math.Sin(Math.PI)),
                         actor.Position.Y,
@@ -1192,19 +1152,18 @@ namespace PixelPerfect
                         ImGui.GetColorU32(_nchevCol), _nchevThicc);
                 }
             }
-            //E
+
             if (_east)
             {
                 if (_eline)
                 {
-                    //Tip of arrow
                     _gui.WorldToScreen(new Num.Vector3(
                                 actor.Position.X + (_elineLength + _elineOffset),
                                 actor.Position.Y,
                                 actor.Position.Z
                             ),
                             out Num.Vector2 lineTip);
-                    //Player + offset
+
                     _gui.WorldToScreen(new Num.Vector3(
                             actor.Position.X + (_elineOffset),
                             actor.Position.Y,
@@ -1217,13 +1176,9 @@ namespace PixelPerfect
                 }
                 if (_echev)
                 {
-
-                    //R Arrow Lin
                     _gui.WorldToScreen(new Num.Vector3(actor.Position.X + _echevOffset, actor.Position.Y, actor.Position.Z + (_echevRad / 2)), out Num.Vector2 chevOffset1);
-                    //L Arrow Line
                     _gui.WorldToScreen(new Num.Vector3(actor.Position.X + _echevOffset, actor.Position.Y, actor.Position.Z - (_echevRad / 2)), out Num.Vector2 chevOffset2);
 
-                    //E chev tip
                     _gui.WorldToScreen(new Num.Vector3(
                         actor.Position.X + (_echevOffset + _echevLength),
                         actor.Position.Y,
@@ -1237,19 +1192,18 @@ namespace PixelPerfect
                         ImGui.GetColorU32(_echevCol), _echevThicc);
                 }
             }
-            //S
+
             if (_south)
             {
                 if (_sline)
                 {
-                    //Tip of arrow
                     _gui.WorldToScreen(new Num.Vector3(
                                 actor.Position.X,
                                 actor.Position.Y,
                                 actor.Position.Z + (_slineLength + _slineOffset)
                             ),
                             out Num.Vector2 lineTip);
-                    //Player + offset
+
                     _gui.WorldToScreen(new Num.Vector3(
                             actor.Position.X,
                             actor.Position.Y,
@@ -1262,13 +1216,9 @@ namespace PixelPerfect
                 }
                 if (_schev)
                 {
-
-                    //R Arrow Lin
                     _gui.WorldToScreen(new Num.Vector3(actor.Position.X + (_schevRad / 2), actor.Position.Y, actor.Position.Z + _schevOffset), out Num.Vector2 chevOffset1);
-                    //L Arrow Line
                     _gui.WorldToScreen(new Num.Vector3(actor.Position.X - (_schevRad / 2), actor.Position.Y, actor.Position.Z + _schevOffset), out Num.Vector2 chevOffset2);
 
-                    //S chev tip
                     _gui.WorldToScreen(new Num.Vector3(
                         actor.Position.X,
                         actor.Position.Y,
@@ -1282,19 +1232,18 @@ namespace PixelPerfect
                         ImGui.GetColorU32(_schevCol), _schevThicc);
                 }
             }
-            //W
+
             if (_west)
             {
                 if (_wline)
                 {
-                    //Tip of arrow
                     _gui.WorldToScreen(new Num.Vector3(
                                 actor.Position.X - (_wlineLength + _wlineOffset),
                                 actor.Position.Y,
                                 actor.Position.Z
                             ),
                             out Num.Vector2 lineTip);
-                    //Player + offset
+
                     _gui.WorldToScreen(new Num.Vector3(
                             actor.Position.X - (_wlineOffset),
                             actor.Position.Y,
@@ -1307,13 +1256,9 @@ namespace PixelPerfect
                 }
                 if (_wchev)
                 {
-
-                    //R Arrow Lin
                     _gui.WorldToScreen(new Num.Vector3(actor.Position.X - _wchevOffset, actor.Position.Y, actor.Position.Z + (_wchevRad / 2)), out Num.Vector2 chevOffset1);
-                    //L Arrow Line
                     _gui.WorldToScreen(new Num.Vector3(actor.Position.X - _wchevOffset, actor.Position.Y, actor.Position.Z - (_wchevRad / 2)), out Num.Vector2 chevOffset2);
 
-                    //W chev tip
                     _gui.WorldToScreen(new Num.Vector3(
                         actor.Position.X - (_wchevOffset + _wchevLength),
                         actor.Position.Y,
@@ -1327,7 +1272,7 @@ namespace PixelPerfect
                         ImGui.GetColorU32(_wchevCol), _wchevThicc);
                 }
             }
-            //
+
             if (_pline)
             {
 
@@ -1348,11 +1293,9 @@ namespace PixelPerfect
 
                 ImGui.GetWindowDrawList().AddLine(new Num.Vector2(lineTip.X, lineTip.Y), new Num.Vector2(lineOffset.X, lineOffset.Y), ImGui.GetColorU32(_plineCol), _plineThicc);
             }
+
             if (_pchev)
             {
-
-
-                //R Arrow Line
                 _gui.WorldToScreen(new Num.Vector3(actor.Position.X + _pchevOffset * (float)Math.Sin(actor.Rotation + _pchevRad),
                                                    actor.Position.Y,
                                                    actor.Position.Z + _pchevOffset * (float)Math.Cos(actor.Rotation + _pchevRad)),
@@ -1363,8 +1306,6 @@ namespace PixelPerfect
                                                    actor.Position.Z + _pchevOffset * (float)Math.Cos(actor.Rotation - _pchevRad)),
                                                    out Num.Vector2 chevOffset2);
 
-
-                //Pchev works ok
                 _gui.WorldToScreen(new Num.Vector3(
                         actor.Position.X + ((_pchevLength + _pchevOffset) * (float)Math.Sin(actor.Rotation)),
                         actor.Position.Y,
@@ -1376,6 +1317,7 @@ namespace PixelPerfect
                 ImGui.GetWindowDrawList().AddLine(new Num.Vector2(chevTip.X, chevTip.Y), new Num.Vector2(chevOffset2.X, chevOffset2.Y), ImGui.GetColorU32(_pchevCol), _pchevThicc);
 
             }
+
             if (_partyenabled)
             {
                 if (_partylist != null)
@@ -1386,100 +1328,169 @@ namespace PixelPerfect
                         if (pmember0.Name.ToString() != actor.Name.ToString())
                         {
                             _gui.WorldToScreen(new Num.Vector3(pmember0.Position.X, pmember0.Position.Y, pmember0.Position.Z), out Num.Vector2 pm0pos);
-                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm0pos.X, pm0pos.Y), 2f, ImGui.GetColorU32(_pdotcol), 100);
+                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm0pos.X, pm0pos.Y), _pdotthickness, ImGui.GetColorU32(_pdotcol), 100);
                         }
-
-
 
                         PartyMember pmember1 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(1));
                         if (pmember1.Name.ToString() != actor.Name.ToString())
                         {
                             _gui.WorldToScreen(new Num.Vector3(pmember1.Position.X, pmember1.Position.Y, pmember1.Position.Z), out Num.Vector2 pm1pos);
-                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm1pos.X, pm1pos.Y), 2f, ImGui.GetColorU32(_pdotcol), 100);
+                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm1pos.X, pm1pos.Y), _pdotthickness, ImGui.GetColorU32(_pdotcol), 100);
                         }
                     }
                     if (_partylist.Length > 1)
                     {
-
                         PartyMember pmember2 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(2));
                         if (pmember2.Name.ToString() != actor.Name.ToString())
                         {
                             _gui.WorldToScreen(new Num.Vector3(pmember2.Position.X, pmember2.Position.Y, pmember2.Position.Z), out Num.Vector2 pm2pos);
-                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm2pos.X, pm2pos.Y), 2f, ImGui.GetColorU32(_pdotcol), 100);
+                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm2pos.X, pm2pos.Y), _pdotthickness, ImGui.GetColorU32(_pdotcol), 100);
                         }
                     }
                     if (_partylist.Length > 2)
                     {
-
                         PartyMember pmember3 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(3));
                         if (pmember3.Name.ToString() != actor.Name.ToString())
                         {
                             _gui.WorldToScreen(new Num.Vector3(pmember3.Position.X, pmember3.Position.Y, pmember3.Position.Z), out Num.Vector2 pm3pos);
-                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm3pos.X, pm3pos.Y), 2f, ImGui.GetColorU32(_pdotcol), 100);
+                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm3pos.X, pm3pos.Y), _pdotthickness, ImGui.GetColorU32(_pdotcol), 100);
                         }
                     }
                     if (_partylist.Length > 3)
                     {
-
                         PartyMember pmember4 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(4));
                         if (pmember4.Name.ToString() != actor.Name.ToString())
                         {
                             _gui.WorldToScreen(new Num.Vector3(pmember4.Position.X, pmember4.Position.Y, pmember4.Position.Z), out Num.Vector2 pm4pos);
-                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm4pos.X, pm4pos.Y), 2f, ImGui.GetColorU32(_pdotcol), 100);
+                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm4pos.X, pm4pos.Y), _pdotthickness, ImGui.GetColorU32(_pdotcol), 100);
                         }
                     }
                     if (_partylist.Length > 4)
                     {
-
                         PartyMember pmember5 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(5));
                         if (pmember5.Name.ToString() != actor.Name.ToString())
                         {
                             _gui.WorldToScreen(new Num.Vector3(pmember5.Position.X, pmember5.Position.Y, pmember5.Position.Z), out Num.Vector2 pm5pos);
-                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm5pos.X, pm5pos.Y), 2f, ImGui.GetColorU32(_pdotcol), 100);
+                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm5pos.X, pm5pos.Y), _pdotthickness, ImGui.GetColorU32(_pdotcol), 100);
                         }
                     }
                     if (_partylist.Length > 5)
                     {
-
                         PartyMember pmember6 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(6));
                         if (pmember6.Name.ToString() != actor.Name.ToString())
                         {
                             _gui.WorldToScreen(new Num.Vector3(pmember6.Position.X, pmember6.Position.Y, pmember6.Position.Z), out Num.Vector2 pm6pos);
-                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm6pos.X, pm6pos.Y), 2f, ImGui.GetColorU32(_pdotcol), 100);
+                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm6pos.X, pm6pos.Y), _pdotthickness, ImGui.GetColorU32(_pdotcol), 100);
                         }
                     }
                     if (_partylist.Length > 6)
                     {
-
                         PartyMember pmember7 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(7));
                         if (pmember7.Name.ToString() != actor.Name.ToString())
                         {
                             _gui.WorldToScreen(new Num.Vector3(pmember7.Position.X, pmember7.Position.Y, pmember7.Position.Z), out Num.Vector2 pm7pos);
-                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm7pos.X, pm7pos.Y), 2f, ImGui.GetColorU32(_pdotcol), 100);
+                            ImGui.GetWindowDrawList().AddCircleFilled(new Num.Vector2(pm7pos.X, pm7pos.Y), _pdotthickness, ImGui.GetColorU32(_pdotcol), 100);
                         }
                     }
 
                 }
             }
+
             if (_phbring)
             {
                 if (_partylist != null)
                 {
                     if (_partylist.Length > 0)
                     {
-
                         PartyMember pmember0 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(0));
                         if (pmember0.Name.ToString() != actor.Name.ToString())
                         {
-                            DrawRingPlayerWorld(pmember0, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            if (_rolecolors)
+                            {
+                                if (pmember0.ClassJob.ToString().Contains("Paladin") ||
+                                    pmember0.ClassJob.ToString().Contains("Dark") ||
+                                    pmember0.ClassJob.ToString().Contains("Gun") ||
+                                    pmember0.ClassJob.ToString().Contains("War"))
+                                {
+                                    DrawRingPlayerWorld(pmember0, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_tankcolor));
+                                }
+                                else if (pmember0.ClassJob.ToString().Contains("White") ||
+                                    pmember0.ClassJob.ToString().Contains("Sch") ||
+                                    pmember0.ClassJob.ToString().Contains("Sage") ||
+                                    pmember0.ClassJob.ToString().Contains("Ast"))
+                                {
+                                    DrawRingPlayerWorld(pmember0, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_healercolor));
+                                }
+                                else if (pmember0.ClassJob.ToString().Contains("Monk") ||
+                                    pmember0.ClassJob.ToString().Contains("Drag") ||
+                                    pmember0.ClassJob.ToString().Contains("Nin") ||
+                                    pmember0.ClassJob.ToString().Contains("Sam") ||
+                                    pmember0.ClassJob.ToString().Contains("Reap"))
+                                {
+                                    DrawRingPlayerWorld(pmember0, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_melecolor));
+                                }
+                                else if (pmember0.ClassJob.ToString().Contains("Bard") ||
+                                    pmember0.ClassJob.ToString().Contains("Mach") ||
+                                    pmember0.ClassJob.ToString().Contains("Dance"))
+                                {
+                                    DrawRingPlayerWorld(pmember0, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_physrangecolor));
+                                }
+                                else if (pmember0.ClassJob.ToString().Contains("Black") || pmember0.ClassJob.ToString().Contains("Summ") || pmember0.ClassJob.ToString().Contains("Red") || pmember0.ClassJob.ToString().Contains("Blue"))
+                                {
+                                    DrawRingPlayerWorld(pmember0, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_magicrangecolor));
+                                }
+                            }
+                            else
+                            {
+                                DrawRingPlayerWorld(pmember0, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            }
                         }
-
-
 
                         PartyMember pmember1 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(1));
                         if (pmember1.Name.ToString() != actor.Name.ToString())
                         {
-                            DrawRingPlayerWorld(pmember1, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            if (_rolecolors)
+                            {
+                                if (pmember1.ClassJob.ToString().Contains("Paladin") ||
+                                    pmember1.ClassJob.ToString().Contains("Dark") ||
+                                    pmember1.ClassJob.ToString().Contains("Gun") ||
+                                    pmember1.ClassJob.ToString().Contains("War"))
+                                {
+                                    DrawRingPlayerWorld(pmember1, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_tankcolor));
+                                }
+                                else if (pmember1.ClassJob.ToString().Contains("White") ||
+                                    pmember1.ClassJob.ToString().Contains("Sch") ||
+                                    pmember1.ClassJob.ToString().Contains("Sage") ||
+                                    pmember1.ClassJob.ToString().Contains("Ast"))
+                                {
+                                    DrawRingPlayerWorld(pmember1, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_healercolor));
+                                }
+                                else if (pmember1.ClassJob.ToString().Contains("Monk") ||
+                                    pmember1.ClassJob.ToString().Contains("Drag") ||
+                                    pmember1.ClassJob.ToString().Contains("Nin") ||
+                                    pmember1.ClassJob.ToString().Contains("Sam") ||
+                                    pmember1.ClassJob.ToString().Contains("Reap"))
+                                {
+                                    DrawRingPlayerWorld(pmember1, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_melecolor));
+                                }
+                                else if (pmember1.ClassJob.ToString().Contains("Bard") ||
+                                    pmember1.ClassJob.ToString().Contains("Mach") ||
+                                    pmember1.ClassJob.ToString().Contains("Dance"))
+                                {
+                                    DrawRingPlayerWorld(pmember1, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_physrangecolor));
+                                }
+                                else if (pmember1.ClassJob.ToString().Contains("Black") ||
+                                    pmember1.ClassJob.ToString().Contains("Summ") ||
+                                    pmember1.ClassJob.ToString().Contains("Red") ||
+                                    pmember1.ClassJob.ToString().Contains("Blue"))
+                                {
+                                    DrawRingPlayerWorld(pmember1, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_magicrangecolor));
+                                }
+                            }
+                            else
+                            {
+                                DrawRingPlayerWorld(pmember1, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            }
                         }
                     }
                     if (_partylist.Length > 1)
@@ -1488,7 +1499,48 @@ namespace PixelPerfect
                         PartyMember pmember2 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(2));
                         if (pmember2.Name.ToString() != actor.Name.ToString())
                         {
-                            DrawRingPlayerWorld(pmember2, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            if (_rolecolors)
+                            {
+                                if (pmember2.ClassJob.ToString().Contains("Paladin") ||
+                                    pmember2.ClassJob.ToString().Contains("Dark") ||
+                                    pmember2.ClassJob.ToString().Contains("Gun") ||
+                                    pmember2.ClassJob.ToString().Contains("War"))
+                                {
+                                    DrawRingPlayerWorld(pmember2, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_tankcolor));
+                                }
+                                else if (pmember2.ClassJob.ToString().Contains("White") ||
+                                    pmember2.ClassJob.ToString().Contains("Sch") ||
+                                    pmember2.ClassJob.ToString().Contains("Sage") ||
+                                    pmember2.ClassJob.ToString().Contains("Ast"))
+                                {
+                                    DrawRingPlayerWorld(pmember2, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_healercolor));
+                                }
+                                else if (pmember2.ClassJob.ToString().Contains("Monk") ||
+                                    pmember2.ClassJob.ToString().Contains("Drag") ||
+                                    pmember2.ClassJob.ToString().Contains("Nin") ||
+                                    pmember2.ClassJob.ToString().Contains("Sam") ||
+                                    pmember2.ClassJob.ToString().Contains("Reap"))
+                                {
+                                    DrawRingPlayerWorld(pmember2, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_melecolor));
+                                }
+                                else if (pmember2.ClassJob.ToString().Contains("Bard") ||
+                                    pmember2.ClassJob.ToString().Contains("Mach") ||
+                                    pmember2.ClassJob.ToString().Contains("Dance"))
+                                {
+                                    DrawRingPlayerWorld(pmember2, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_physrangecolor));
+                                }
+                                else if (pmember2.ClassJob.ToString().Contains("Black") ||
+                                    pmember2.ClassJob.ToString().Contains("Summ") ||
+                                    pmember2.ClassJob.ToString().Contains("Red") ||
+                                    pmember2.ClassJob.ToString().Contains("Blue"))
+                                {
+                                    DrawRingPlayerWorld(pmember2, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_magicrangecolor));
+                                }
+                            }
+                            else
+                            {
+                                DrawRingPlayerWorld(pmember2, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            }
                         }
                     }
                     if (_partylist.Length > 2)
@@ -1497,16 +1549,97 @@ namespace PixelPerfect
                         PartyMember pmember3 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(3));
                         if (pmember3.Name.ToString() != actor.Name.ToString())
                         {
-                            DrawRingPlayerWorld(pmember3, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            if (_rolecolors)
+                            {
+                                if (pmember3.ClassJob.ToString().Contains("Paladin") ||
+                                    pmember3.ClassJob.ToString().Contains("Dark") ||
+                                    pmember3.ClassJob.ToString().Contains("Gun") ||
+                                    pmember3.ClassJob.ToString().Contains("War"))
+                                {
+                                    DrawRingPlayerWorld(pmember3, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_tankcolor));
+                                }
+                                else if (pmember3.ClassJob.ToString().Contains("White") ||
+                                    pmember3.ClassJob.ToString().Contains("Sch") ||
+                                    pmember3.ClassJob.ToString().Contains("Sage") ||
+                                    pmember3.ClassJob.ToString().Contains("Ast"))
+                                {
+                                    DrawRingPlayerWorld(pmember3, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_healercolor));
+                                }
+                                else if (pmember3.ClassJob.ToString().Contains("Monk") ||
+                                    pmember3.ClassJob.ToString().Contains("Drag") ||
+                                    pmember3.ClassJob.ToString().Contains("Nin") ||
+                                    pmember3.ClassJob.ToString().Contains("Sam") ||
+                                    pmember3.ClassJob.ToString().Contains("Reap"))
+                                {
+                                    DrawRingPlayerWorld(pmember3, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_melecolor));
+                                }
+                                else if (pmember3.ClassJob.ToString().Contains("Bard") ||
+                                    pmember3.ClassJob.ToString().Contains("Mach") ||
+                                    pmember3.ClassJob.ToString().Contains("Dance"))
+                                {
+                                    DrawRingPlayerWorld(pmember3, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_physrangecolor));
+                                }
+                                else if (pmember3.ClassJob.ToString().Contains("Black") ||
+                                    pmember3.ClassJob.ToString().Contains("Summ") ||
+                                    pmember3.ClassJob.ToString().Contains("Red") ||
+                                    pmember3.ClassJob.ToString().Contains("Blue"))
+                                {
+                                    DrawRingPlayerWorld(pmember3, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_magicrangecolor));
+                                }
+                            }
+                            else
+                            {
+                                DrawRingPlayerWorld(pmember3, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            }
                         }
                     }
                     if (_partylist.Length > 3)
                     {
-
                         PartyMember pmember4 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(4));
                         if (pmember4.Name.ToString() != actor.Name.ToString())
                         {
-                            DrawRingPlayerWorld(pmember4, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            if (_rolecolors)
+                            {
+                                if (pmember4.ClassJob.ToString().Contains("Paladin") ||
+                                    pmember4.ClassJob.ToString().Contains("Dark") ||
+                                    pmember4.ClassJob.ToString().Contains("Gun") ||
+                                    pmember4.ClassJob.ToString().Contains("War"))
+                                {
+                                    DrawRingPlayerWorld(pmember4, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_tankcolor));
+                                }
+                                else if (pmember4.ClassJob.ToString().Contains("White") ||
+                                    pmember4.ClassJob.ToString().Contains("Sch") ||
+                                    pmember4.ClassJob.ToString().Contains("Sage") ||
+                                    pmember4.ClassJob.ToString().Contains("Ast"))
+                                {
+                                    DrawRingPlayerWorld(pmember4, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_healercolor));
+                                }
+                                else if (pmember4.ClassJob.ToString().Contains("Monk") ||
+                                    pmember4.ClassJob.ToString().Contains("Drag") ||
+                                    pmember4.ClassJob.ToString().Contains("Nin") ||
+                                    pmember4.ClassJob.ToString().Contains("Sam") ||
+                                    pmember4.ClassJob.ToString().Contains("Reap"))
+                                {
+                                    DrawRingPlayerWorld(pmember4, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_melecolor));
+                                }
+                                else if (pmember4.ClassJob.ToString().Contains("Bard") ||
+                                    pmember4.ClassJob.ToString().Contains("Mach") ||
+                                    pmember4.ClassJob.ToString().Contains("Dance"))
+                                {
+                                    DrawRingPlayerWorld(pmember4, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_physrangecolor));
+                                }
+                                else if (pmember4.ClassJob.ToString().Contains("Black") ||
+                                    pmember4.ClassJob.ToString().Contains("Summ") ||
+                                    pmember4.ClassJob.ToString().Contains("Red") ||
+                                    pmember4.ClassJob.ToString().Contains("Blue"))
+                                {
+                                    DrawRingPlayerWorld(pmember4, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_magicrangecolor));
+                                }
+                            }
+                            else
+                            {
+                                DrawRingPlayerWorld(pmember4, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            }
                         }
                     }
                     if (_partylist.Length > 4)
@@ -1515,7 +1648,48 @@ namespace PixelPerfect
                         PartyMember pmember5 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(5));
                         if (pmember5.Name.ToString() != actor.Name.ToString())
                         {
-                            DrawRingPlayerWorld(pmember5, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            if (_rolecolors)
+                            {
+                                if (pmember5.ClassJob.ToString().Contains("Paladin") ||
+                                    pmember5.ClassJob.ToString().Contains("Dark") ||
+                                    pmember5.ClassJob.ToString().Contains("Gun") ||
+                                    pmember5.ClassJob.ToString().Contains("War"))
+                                {
+                                    DrawRingPlayerWorld(pmember5, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_tankcolor));
+                                }
+                                else if (pmember5.ClassJob.ToString().Contains("White") ||
+                                    pmember5.ClassJob.ToString().Contains("Sch") ||
+                                    pmember5.ClassJob.ToString().Contains("Sage") ||
+                                    pmember5.ClassJob.ToString().Contains("Ast"))
+                                {
+                                    DrawRingPlayerWorld(pmember5, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_healercolor));
+                                }
+                                else if (pmember5.ClassJob.ToString().Contains("Monk") ||
+                                    pmember5.ClassJob.ToString().Contains("Drag") ||
+                                    pmember5.ClassJob.ToString().Contains("Nin") ||
+                                    pmember5.ClassJob.ToString().Contains("Sam") ||
+                                    pmember5.ClassJob.ToString().Contains("Reap"))
+                                {
+                                    DrawRingPlayerWorld(pmember5, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_melecolor));
+                                }
+                                else if (pmember5.ClassJob.ToString().Contains("Bard") ||
+                                    pmember5.ClassJob.ToString().Contains("Mach") ||
+                                    pmember5.ClassJob.ToString().Contains("Dance"))
+                                {
+                                    DrawRingPlayerWorld(pmember5, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_physrangecolor));
+                                }
+                                else if (pmember5.ClassJob.ToString().Contains("Black") ||
+                                    pmember5.ClassJob.ToString().Contains("Summ") ||
+                                    pmember5.ClassJob.ToString().Contains("Red") ||
+                                    pmember5.ClassJob.ToString().Contains("Blue"))
+                                {
+                                    DrawRingPlayerWorld(pmember5, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_magicrangecolor));
+                                }
+                            }
+                            else
+                            {
+                                DrawRingPlayerWorld(pmember5, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            }
                         }
                     }
                     if (_partylist.Length > 5)
@@ -1524,7 +1698,48 @@ namespace PixelPerfect
                         PartyMember pmember6 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(6));
                         if (pmember6.Name.ToString() != actor.Name.ToString())
                         {
-                            DrawRingPlayerWorld(pmember6, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            if (_rolecolors)
+                            {
+                                if (pmember6.ClassJob.ToString().Contains("Paladin") ||
+                                    pmember6.ClassJob.ToString().Contains("Dark") ||
+                                    pmember6.ClassJob.ToString().Contains("Gun") ||
+                                    pmember6.ClassJob.ToString().Contains("War"))
+                                {
+                                    DrawRingPlayerWorld(pmember6, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_tankcolor));
+                                }
+                                else if (pmember6.ClassJob.ToString().Contains("White") ||
+                                    pmember6.ClassJob.ToString().Contains("Sch") ||
+                                    pmember6.ClassJob.ToString().Contains("Sage") ||
+                                    pmember6.ClassJob.ToString().Contains("Ast"))
+                                {
+                                    DrawRingPlayerWorld(pmember6, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_healercolor));
+                                }
+                                else if (pmember6.ClassJob.ToString().Contains("Monk") ||
+                                    pmember6.ClassJob.ToString().Contains("Drag") ||
+                                    pmember6.ClassJob.ToString().Contains("Nin") ||
+                                    pmember6.ClassJob.ToString().Contains("Sam") ||
+                                    pmember6.ClassJob.ToString().Contains("Reap"))
+                                {
+                                    DrawRingPlayerWorld(pmember6, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_melecolor));
+                                }
+                                else if (pmember6.ClassJob.ToString().Contains("Bard") ||
+                                    pmember6.ClassJob.ToString().Contains("Mach") ||
+                                    pmember6.ClassJob.ToString().Contains("Dance"))
+                                {
+                                    DrawRingPlayerWorld(pmember6, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_physrangecolor));
+                                }
+                                else if (pmember6.ClassJob.ToString().Contains("Black") ||
+                                    pmember6.ClassJob.ToString().Contains("Summ") ||
+                                    pmember6.ClassJob.ToString().Contains("Red") ||
+                                    pmember6.ClassJob.ToString().Contains("Blue"))
+                                {
+                                    DrawRingPlayerWorld(pmember6, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_magicrangecolor));
+                                }
+                            }
+                            else
+                            {
+                                DrawRingPlayerWorld(pmember6, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            }
                         }
                     }
                     if (_partylist.Length > 6)
@@ -1532,11 +1747,53 @@ namespace PixelPerfect
                         PartyMember pmember7 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(7));
                         if (pmember7.Name.ToString() != actor.Name.ToString())
                         {
-                            DrawRingPlayerWorld(pmember7, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            if (_rolecolors)
+                            {
+                                if (pmember7.ClassJob.ToString().Contains("Paladin") ||
+                                    pmember7.ClassJob.ToString().Contains("Dark") ||
+                                    pmember7.ClassJob.ToString().Contains("Gun") ||
+                                    pmember7.ClassJob.ToString().Contains("War"))
+                                {
+                                    DrawRingPlayerWorld(pmember7, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_tankcolor));
+                                }
+                                else if (pmember7.ClassJob.ToString().Contains("White") ||
+                                    pmember7.ClassJob.ToString().Contains("Sch") ||
+                                    pmember7.ClassJob.ToString().Contains("Sage") ||
+                                    pmember7.ClassJob.ToString().Contains("Ast"))
+                                {
+                                    DrawRingPlayerWorld(pmember7, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_healercolor));
+                                }
+                                else if (pmember7.ClassJob.ToString().Contains("Monk") ||
+                                    pmember7.ClassJob.ToString().Contains("Drag") ||
+                                    pmember7.ClassJob.ToString().Contains("Nin") ||
+                                    pmember7.ClassJob.ToString().Contains("Sam") ||
+                                    pmember7.ClassJob.ToString().Contains("Reap"))
+                                {
+                                    DrawRingPlayerWorld(pmember7, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_melecolor));
+                                }
+                                else if (pmember7.ClassJob.ToString().Contains("Bard") ||
+                                    pmember7.ClassJob.ToString().Contains("Mach") ||
+                                    pmember7.ClassJob.ToString().Contains("Dance"))
+                                {
+                                    DrawRingPlayerWorld(pmember7, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_physrangecolor));
+                                }
+                                else if (pmember7.ClassJob.ToString().Contains("Black") ||
+                                    pmember7.ClassJob.ToString().Contains("Summ") ||
+                                    pmember7.ClassJob.ToString().Contains("Red") ||
+                                    pmember7.ClassJob.ToString().Contains("Blue"))
+                                {
+                                    DrawRingPlayerWorld(pmember7, _partyradius1, _partysegments1, _partythickness1, ImGui.GetColorU32(_magicrangecolor));
+                                }
+                            }
+                            else
+                            {
+                                DrawRingPlayerWorld(pmember7, _cs.LocalPlayer.HitboxRadius, _phbsegments, _phbthickness, ImGui.GetColorU32(_phbcolRing));
+                            }
                         }
                     }
                 }
             }
+
             if (_partyring1)
             {
                 if (_partylist != null)
@@ -1653,57 +1910,49 @@ namespace PixelPerfect
             SaveConfig();
         }
 
+        /// <Config>///
         private void SaveConfig()
         {
             _configuration.Enabled = _enabled;
             _configuration.Col = _col;
+            _configuration.HBdotradius = _hbdotradius;
 
             _configuration.Combat = _combat;
-            //_configuration.Circle = _circle;
             _configuration.Instance = _instance;
 
-
-            //_configuration.Col2 = _col2;
-            _configuration.HBCol = _hbcol;
-
             _configuration.ColRing = _colRing;
-            _configuration.ColRing2 = _colRing2;
-            _configuration.ColRing3 = _colRing3;
-            _configuration.ColRing4 = _colRing4;
-            _configuration.ColRing5 = _colRing5;
             _configuration.HBColRing = _hbcolRing;
 
             _configuration.Ring = _ring;
             _configuration.Thickness = _thickness;
+            _configuration.Segments = _segments;
+            _configuration.Radius = _radius;
 
             _configuration.Ring2 = _ring2;
             _configuration.Thickness2 = _thickness2;
+            _configuration.Segments2 = _segments2;
+            _configuration.Radius2 = _radius2;
 
             _configuration.Ring3 = _ring3;
             _configuration.Thickness3 = _thickness3;
+            _configuration.Segments3 = _segments3;
+            _configuration.Radius3 = _radius3;
 
             _configuration.Ring4 = _ring4;
             _configuration.Thickness4 = _thickness4;
+            _configuration.Segments4 = _segments4;
+            _configuration.Radius4 = _radius4;
 
             _configuration.Ring5 = _ring5;
             _configuration.Thickness5 = _thickness5;
+            _configuration.Segments5 = _segments5;
+            _configuration.Radius5 = _radius5;
+
 
             _configuration.HBRing = _hbring;
             _configuration.HBThickness = _hbthickness;
             _configuration.HBSegments = _hbsegments;
             _configuration.HBRadius = _hbradius;
-
-            _configuration.Segments = _segments;
-            _configuration.Segments2 = _segments2;
-            _configuration.Segments3 = _segments3;
-            _configuration.Segments4 = _segments4;
-            _configuration.Segments5 = _segments5;
-
-            _configuration.Radius = _radius;
-            _configuration.Radius2 = _radius2;
-            _configuration.Radius3 = _radius3;
-            _configuration.Radius4 = _radius4;
-            _configuration.Radius5 = _radius5;
 
             _configuration.North = _north;
             _configuration.East = _east;
@@ -1778,44 +2027,28 @@ namespace PixelPerfect
             _configuration.PLineOffset = _plineOffset;
             _configuration.PLineLength = _plineLength;
 
-            _configuration.Ingress = _ingress;
-            _configuration.Egress = _egress;
-            _configuration.Ingpoly = _ingpoly;
-            _configuration.Egrpoly = _egrpoly;
-            _configuration.Ingline = _ingline;
-            _configuration.Egrline = _egrline;
-
-            _configuration.IngressValue = _ingvalue;
-            _configuration.EgressValue = _egrvalue;
-
-            _configuration.IngcolPolygon = _ingcolPolygon;
-            _configuration.IngRadius = _ingradius;
-            _configuration.IngSegments = _ingsegments;
-            _configuration.IngThickness = _ingthickness;
-            _configuration.IngCol = _ingcol;
-
-            //party hitbox and ring load
-            //party hitbox ring
             _configuration.PhbRing = _phbring;
             _configuration.PhbColRing = _phbcolRing;
             _configuration.PhbRadius = _phbradius;
             _configuration.PhbSegments = _phbsegments;
             _configuration.PhbThickness = _phbthickness;
 
-            //party hitbox dot
             _configuration.Penabled = _partyenabled;
             _configuration.PdotCol = _pdotcol;
+            _configuration.PdotThickness = _pdotthickness;
 
-            //party mele ring
             _configuration.PRing1 = _partyring1;
             _configuration.PColRing1 = _partycolRing1;
             _configuration.PRadius1 = _partyradius1;
             _configuration.PSegments1 = _partysegments1;
             _configuration.PThickness1 = _partythickness1;
 
-
-
-
+            _configuration.RoleColors = _rolecolors;
+            _configuration.MeleColor = _melecolor;
+            _configuration.PhysRangeColor = _physrangecolor;
+            _configuration.MagicRangeColor = _magicrangecolor;
+            _configuration.TankColor = _tankcolor;
+            _configuration.HealerColor = _healercolor;
 
             _pi.SavePluginConfig(_configuration);
         }
@@ -1829,12 +2062,14 @@ namespace PixelPerfect
             var seg = numSegments / 2;
             for (var i = 0; i <= numSegments; i++)
             {
+
                 _gui.WorldToScreen(new Num.Vector3(
                     actor.Position.X + (radius * (float)Math.Sin((Math.PI / seg) * i)),
                     actor.Position.Y,
                     actor.Position.Z + (radius * (float)Math.Cos((Math.PI / seg) * i))
                     ),
                     out Num.Vector2 pos);
+
                 ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos.X, pos.Y));
             }
             ImGui.GetWindowDrawList().PathStroke(colour, ImDrawFlags.None, thicc);
@@ -1842,6 +2077,7 @@ namespace PixelPerfect
 
         private void DrawRingPlayerWorld(PartyMember pmem, float radius, int numSegments, float thicc, uint colour)
         {
+            bool b;
             if (numSegments > 100)
             {
                 numSegments = 100;
@@ -1849,13 +2085,17 @@ namespace PixelPerfect
             var seg = numSegments / 2;
             for (var i = 0; i <= numSegments; i++)
             {
-                _gui.WorldToScreen(new Num.Vector3(
+                b = _gui.WorldToScreen(new Num.Vector3(
                     pmem.Position.X + (radius * (float)Math.Sin((Math.PI / seg) * i)),
                     pmem.Position.Y,
                     pmem.Position.Z + (radius * (float)Math.Cos((Math.PI / seg) * i))
                     ),
                     out Num.Vector2 pos);
                 ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos.X, pos.Y));
+                if (b is false)//try to not draw offscreen character rings, odd rings
+                {
+                    break;
+                }
             }
             ImGui.GetWindowDrawList().PathStroke(colour, ImDrawFlags.None, thicc);
         }
@@ -1865,165 +2105,144 @@ namespace PixelPerfect
     public class Config : IPluginConfiguration
     {
         public int Version { get; set; } = 0;
-        public bool Enabled { get; set; } = true;
         public bool Combat { get; set; } = true;
         //public bool Circle { get; set; }
         public bool Instance { get; set; }
 
+        public bool Enabled { get; set; } = true;
         public Num.Vector4 Col { get; set; } = new Num.Vector4(1f, 1f, 1f, 1f);
-        public Num.Vector4 Col2 { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 1f);
-        public Num.Vector4 Col3 { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 1f);
-        public Num.Vector4 Col4 { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 1f);
-        public Num.Vector4 Col5 { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 1f);
-        public Num.Vector4 HBCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 1f);
-
-        public Num.Vector4 ColRing { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-        public Num.Vector4 ColRing2 { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-        public Num.Vector4 ColRing3 { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-        public Num.Vector4 ColRing4 { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-        public Num.Vector4 ColRing5 { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-        public Num.Vector4 HBColRing { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-
-        public int Segments { get; set; } = 100;
-        public int Segments2 { get; set; } = 100;
-        public int Segments3 { get; set; } = 100;
-        public int Segments4 { get; set; } = 100;
-        public int Segments5 { get; set; } = 100;
-        public int HBSegments { get; set; } = 100;
-
-
-        public float Thickness { get; set; } = 10f;
-        public float Thickness2 { get; set; } = 10f;
-        public float Thickness3 { get; set; } = 10f;
-        public float Thickness4 { get; set; } = 10f;
-        public float Thickness5 { get; set; } = 10f;
-        public float HBThickness { get; set; } = 10f;
+        public float HBdotradius { get; set; } = 2f;
 
         public bool Ring { get; set; }
-        public bool Ring2 { get; set; }
-        public bool Ring3 { get; set; }
-        public bool Ring4 { get; set; }
-        public bool Ring5 { get; set; }
-        public bool HBRing { get; set; }
-
+        public Num.Vector4 ColRing { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
+        public int Segments { get; set; } = 100;
+        public float Thickness { get; set; } = 10f;
         public float Radius { get; set; } = 2f;
+
+        public bool Ring2 { get; set; }
+        public Num.Vector4 ColRing2 { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
+        public int Segments2 { get; set; } = 100;
+        public float Thickness2 { get; set; } = 10f;
         public float Radius2 { get; set; } = 2f;
+
+        public bool Ring3 { get; set; }
+        public Num.Vector4 ColRing3 { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
+        public int Segments3 { get; set; } = 100;
+        public float Thickness3 { get; set; } = 10f;
         public float Radius3 { get; set; } = 2f;
+
+        public bool Ring4 { get; set; }
+        public Num.Vector4 ColRing4 { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
+        public int Segments4 { get; set; } = 100;
+        public float Thickness4 { get; set; } = 10f;
         public float Radius4 { get; set; } = 2f;
+
+        public bool Ring5 { get; set; }
+        public Num.Vector4 ColRing5 { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
+        public int Segments5 { get; set; } = 100;
+        public float Thickness5 { get; set; } = 10f;
         public float Radius5 { get; set; } = 2f;
+
+        public bool HBRing { get; set; }
+        public Num.Vector4 HBColRing { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
+        public int HBSegments { get; set; } = 100;
+        public float HBThickness { get; set; } = 10f;
         public float HBRadius { get; set; } = 2f;
 
         public bool North { get; set; } = false;
-        public bool East { get; set; } = false;
-        public bool South { get; set; } = false;
-        public bool West { get; set; } = false;
-        public bool Player { get; set; } = false;
-
-
         public bool NLine { get; set; } = false;
-        public bool ELine { get; set; } = false;
-        public bool SLine { get; set; } = false;
-        public bool WLine { get; set; } = false;
-        public bool PLine { get; set; } = false;
         public bool NChev { get; set; } = false;
-        public bool EChev { get; set; } = false;
-        public bool SChev { get; set; } = false;
-        public bool WChev { get; set; } = false;
-        public bool PChev { get; set; } = false;
-
         public float NChevLength { get; set; } = 1f;
         public float NChevOffset { get; set; } = 1f;
         public float NChevRad { get; set; } = 0.5f;
         public float NChevThicc { get; set; } = 5f;
         public Num.Vector4 NChevCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-
-        public float EChevLength { get; set; } = 1f;
-        public float EChevOffset { get; set; } = 1f;
-        public float EChevRad { get; set; } = 0.5f;
-        public float EChevThicc { get; set; } = 5f;
-        public Num.Vector4 EChevCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-
-        public float SChevLength { get; set; } = 1f;
-        public float SChevOffset { get; set; } = 1f;
-        public float SChevRad { get; set; } = 0.5f;
-        public float SChevThicc { get; set; } = 5f;
-        public Num.Vector4 SChevCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-
-        public float WChevLength { get; set; } = 1f;
-        public float WChevOffset { get; set; } = 1f;
-        public float WChevRad { get; set; } = 0.5f;
-        public float WChevThicc { get; set; } = 5f;
-        public Num.Vector4 WChevCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-
-        public float PChevLength { get; set; } = 1f;
-        public float PChevOffset { get; set; } = 1f;
-        public float PChevRad { get; set; } = 0.5f;
-        public float PChevThicc { get; set; } = 5f;
-        public Num.Vector4 PChevCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-
-
         public float NLineLength { get; set; } = 1f;
         public float NLineThicc { get; set; } = 5f;
         public float NLineOffset { get; set; } = 0.5f;
         public Num.Vector4 NLineCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
 
+
+        public bool East { get; set; } = false;
+        public bool ELine { get; set; } = false;
+        public bool EChev { get; set; } = false;
+        public float EChevLength { get; set; } = 1f;
+        public float EChevOffset { get; set; } = 1f;
+        public float EChevRad { get; set; } = 0.5f;
+        public float EChevThicc { get; set; } = 5f;
+        public Num.Vector4 EChevCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
         public float ELineLength { get; set; } = 1f;
         public float ELineThicc { get; set; } = 5f;
         public float ELineOffset { get; set; } = 0.5f;
         public Num.Vector4 ELineCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
 
+        public bool South { get; set; } = false;
+        public bool SLine { get; set; } = false;
+        public bool SChev { get; set; } = false;
+        public float SChevLength { get; set; } = 1f;
+        public float SChevOffset { get; set; } = 1f;
+        public float SChevRad { get; set; } = 0.5f;
+        public float SChevThicc { get; set; } = 5f;
+        public Num.Vector4 SChevCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
         public float SLineLength { get; set; } = 1f;
         public float SLineThicc { get; set; } = 5f;
         public float SLineOffset { get; set; } = 0.5f;
         public Num.Vector4 SLineCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
 
+        public bool West { get; set; } = false;
+        public bool WLine { get; set; } = false;
+        public bool WChev { get; set; } = false;
+        public float WChevLength { get; set; } = 1f;
+        public float WChevOffset { get; set; } = 1f;
+        public float WChevRad { get; set; } = 0.5f;
+        public float WChevThicc { get; set; } = 5f;
+        public Num.Vector4 WChevCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
         public float WLineLength { get; set; } = 1f;
         public float WLineThicc { get; set; } = 5f;
         public float WLineOffset { get; set; } = 0.5f;
         public Num.Vector4 WLineCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
 
 
+        public bool Player { get; set; } = false;
+        public bool PLine { get; set; } = false;
+        public bool PChev { get; set; } = false;
+        public float PChevLength { get; set; } = 1f;
+        public float PChevOffset { get; set; } = 1f;
+        public float PChevRad { get; set; } = 0.5f;
+        public float PChevThicc { get; set; } = 5f;
+        public Num.Vector4 PChevCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
         public float PLineLength { get; set; } = 1f;
         public float PLineThicc { get; set; } = 5f;
         public float PLineOffset { get; set; } = 0.5f;
         public Num.Vector4 PLineCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
 
 
-        public bool Ingress { get; set; } = false;
-        public bool Egress { get; set; } = false;
-        public bool Ingpoly { get; set; } = false;
-        public bool Egrpoly { get; set; } = false;
-        public bool Ingline { get; set; } = false;
-        public bool Egrline { get; set; } = false;
-
-        public float IngressValue { get; set; } = 15f;
-        public float EgressValue { get; set; } = 15f;
-        public Num.Vector4 IngcolPolygon { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-        public Num.Vector4 IngCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-        public float IngRadius { get; set; } = 0.5f;
-        public float IngThickness { get; set; } = 5f;
-        public int IngSegments { get; set; } = 3;
-
         public bool PhbRing { get; set; } = false;
-
         public Num.Vector4 PhbColRing { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-
         public float PhbRadius { get; set; } = 0.5f;
         public int PhbSegments { get; set; } = 3;
         public float PhbThickness { get; set; } = 5f;
 
         public bool Penabled { get; set; } = false;
-
         public Num.Vector4 PdotCol { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
 
+        public float PdotThickness { get; set; } = 2f;
 
         public bool PRing1 { get; set; } = false;
-
         public Num.Vector4 PColRing1 { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
-
         public float PRadius1 { get; set; } = 0.5f;
         public int PSegments1 { get; set; } = 3;
         public float PThickness1 { get; set; } = 5f;
 
+
+        public bool RoleColors { get; set; } = false;
+        public Num.Vector4 MeleColor { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
+        public Num.Vector4 PhysRangeColor { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
+        public Num.Vector4 MagicRangeColor { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
+        public Num.Vector4 TankColor { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
+        public Num.Vector4 HealerColor { get; set; } = new Num.Vector4(0.4f, 0.4f, 0.4f, 0.5f);
+
+
     }
+#pragma warning restore CA1416 // Validate platform compatibility
 }

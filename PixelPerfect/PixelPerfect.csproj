@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Authors>Haplo064</Authors>
-        <Version>2.0.0.0</Version>
+        <Version>2.1.0.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,6 +15,9 @@
       </Reference>
       <Reference Include="ImGuiScene, Culture=neutral, PublicKeyToken=null">
         <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\ImGuiScene.dll</HintPath>
+      </Reference>
+      <Reference Include="Lumina.Excel">
+        <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Lumina.Excel.dll</HintPath>
       </Reference>
     </ItemGroup>
 
