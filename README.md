@@ -15,8 +15,8 @@ Added party ring.
 
 TODO:
 
-Add ingress marker.  
-Add egress marker. 
-Add draw line to target with configurable colors for in/out of range of x value.  
-commands for new things.  
+Add ingress marker.    
+Add egress marker.   
+Add draw line to target with configurable colors for in/out of range of x value.    
+commands for new things.    
 
