@@ -1449,7 +1449,6 @@ namespace PixelPerfect
                     if (_partylist.Length > 1)
                     {
                         PartyMember pmember0 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(0));
-                        //if(actor.Name.TextValue.ToString() != pmember0.Name.TextValue.ToString())
                         if (pmember0.Name.ToString() != actor.Name.ToString())
                         {
                             if (_rolecolors)
@@ -1477,7 +1476,6 @@ namespace PixelPerfect
                     }
                     if (_partylist.Length > 2)
                     {
-
                         PartyMember pmember2 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(2));
                         if (pmember2.Name.ToString() != actor.Name.ToString())
                         {
@@ -1493,7 +1491,6 @@ namespace PixelPerfect
                     }
                     if (_partylist.Length > 3)
                     {
-
                         PartyMember pmember3 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(3));
                         if (pmember3.Name.ToString() != actor.Name.ToString())
                         {
@@ -1524,7 +1521,6 @@ namespace PixelPerfect
                     }
                     if (_partylist.Length > 5)
                     {
-
                         PartyMember pmember5 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(5));
                         if (pmember5.Name.ToString() != actor.Name.ToString())
                         {
@@ -1540,7 +1536,6 @@ namespace PixelPerfect
                     }
                     if (_partylist.Length > 6)
                     {
-
                         PartyMember pmember6 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(6));
                         if (pmember6.Name.ToString() != actor.Name.ToString())
                         {
@@ -1578,7 +1573,6 @@ namespace PixelPerfect
                 {
                     if (_partylist.Length > 1)
                     {
-
                         PartyMember pmember0 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(0));
                         if (pmember0.Name.ToString() != actor.Name.ToString())
                         {
@@ -1593,7 +1587,6 @@ namespace PixelPerfect
                     }
                     if (_partylist.Length > 2)
                     {
-
                         PartyMember pmember2 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(2));
                         if (pmember2.Name.ToString() != actor.Name.ToString())
                         {
@@ -1602,7 +1595,6 @@ namespace PixelPerfect
                     }
                     if (_partylist.Length > 3)
                     {
-
                         PartyMember pmember3 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(3));
                         if (pmember3.Name.ToString() != actor.Name.ToString())
                         {
@@ -1611,7 +1603,6 @@ namespace PixelPerfect
                     }
                     if (_partylist.Length > 4)
                     {
-
                         PartyMember pmember4 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(4));
                         if (pmember4.Name.ToString() != actor.Name.ToString())
                         {
@@ -1620,7 +1611,6 @@ namespace PixelPerfect
                     }
                     if (_partylist.Length > 5)
                     {
-
                         PartyMember pmember5 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(5));
                         if (pmember5.Name.ToString() != actor.Name.ToString())
                         {
@@ -1629,7 +1619,6 @@ namespace PixelPerfect
                     }
                     if (_partylist.Length > 6)
                     {
-
                         PartyMember pmember6 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(6));
                         if (pmember6.Name.ToString() != actor.Name.ToString())
                         {
@@ -1638,7 +1627,6 @@ namespace PixelPerfect
                     }
                     if (_partylist.Length > 7)
                     {
-
                         PartyMember pmember7 = _partylist.CreatePartyMemberReference(_partylist.GetPartyMemberAddress(7));
                         if (pmember7.Name.ToString() != actor.Name.ToString())
                         {
